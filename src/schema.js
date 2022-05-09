@@ -10,6 +10,7 @@ type Query{
     user(username:String!):User
     users:[User!]!
     me:User!
+    noteFeed(cursor:String):NoteFeed
 }
 
 type Mutation{
@@ -39,6 +40,12 @@ type Note{
     favoritedBy:[User!]
     createdAt: DateTime!
     updatedAt: DateTime!
+}
+
+type NoteFeed{
+    notes:[Note]!
+    cursor:String!
+    hasNextPage:Boolean!
 }
 
 

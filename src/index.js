@@ -4,7 +4,13 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const helmet = require('helmet')
+const cors = require('cors') // cross-origin resource sharing
+app.use(helmet());
+app.use(cors()); // must set CORS policy due to security issue.
 const { ApolloServer, gql } = require('apollo-server-express');
+const depthLimit = require('graphql-depth-limit');
+const { createComplexityLimitRule } = require('graphql-validation-complexity')
 const jwt = require('jsonwebtoken');
 const models = require('./models')
 const typeDefs = require('./schema')
@@ -28,6 +34,7 @@ const getUser = token=>{
 
 // ApolloServer Init ///////////////////////////////////////
 const server = new ApolloServer({typeDefs,resolvers,
+    validationRules:[depthLimit(5),createComplexityLimitRule(1000)],
     context:({req})=>{
         const token = req.headers.authorization;
         const user = getUser(token);
